@@ -11,7 +11,7 @@ class Game:
         self.running = True # переключатель состояния игры
 
         # Режим игры (поле)
-        self.current_mode = 3  # размер поля
+        self.current_mode = 3 # размер поля
         self.cell_size = GRID_MODES[self.current_mode]["cell_size"]
         self.line_count = GRID_MODES[self.current_mode]["line_count"]
 
