@@ -1,17 +1,17 @@
 import sys
 import pygame as pg
-from code.settings import WIDTH, HEIGHT, FPS, TITLE, BG_COLOR, LINE_COLOR, GRID_MODES, Game_Grid, LINE_DOWN_COLOR
+from code.settings import WIDTH, HEIGHT, FPS, TITLE, BG_COLOR, LINE_COLOR, GRID_MODES, LINE_DOWN_COLOR
 
 class Game:
     def __init__(self): # при запуске
         pg.init() # инициализация pg
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT)) # отрисовка окна
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT), pg.RESIZABLE) # отрисовка окна
         pg.display.set_caption(TITLE) # вывод названия окна
         self.clock = pg.time.Clock() # отслеживание времени и FPS
         self.running = True # переключатель состояния игры
 
         # Режим игры (поле)
-        self.current_mode = 4  # размер поля
+        self.current_mode = 3  # размер поля
         self.cell_size = GRID_MODES[self.current_mode]["cell_size"]
         self.line_count = GRID_MODES[self.current_mode]["line_count"]
 
@@ -33,12 +33,16 @@ class Game:
         pass
 
     def draw_grid(self): # рисует игровую сетку в зависимости от режима
-        for i in range(1, self.line_count):
-            pos = (i * self.cell_size) + 25 # координата для отрисовки линий внутри игрового поля от размера поля
-            pg.draw.line(self.screen, LINE_COLOR, (25, pos), ((WIDTH - 25), pos), 5) # отрисовка горизонтальных линий
-            pg.draw.line(self.screen, LINE_COLOR, (pos, 25), (pos, (WIDTH - 25)), 5) # отрисовка вертикальных линиий
+        current_w, current_h = self.screen.get_size() # реальные размеры окна
+        min_size_window = min(current_w, (current_h - 100)) # вычисляет меньшую сторону окна, с учетом того что нужно оставить 100 px в высоте для отрисовки интерфейса
+        middle_width_window = (current_w - min_size_window) // 2 # сколько нужно прибавить к координате x для центрирования в окне
 
-        pg.draw.line(self.screen, LINE_DOWN_COLOR, (5, WIDTH), ((WIDTH - 5), WIDTH), 5) # отрисовка нижней линии для разделения интерфеса и поля
+        for i in range(1, self.line_count + 1):
+            pos = (i * ((min_size_window - 50) // self.cell_size)) + 25 # координата для отрисовки линий внутри игрового поля от размера поля
+            pg.draw.line(self.screen, LINE_COLOR, (middle_width_window + pos, 25), (middle_width_window + pos, min_size_window - 25), 5) # отрисовка горизонтальных линий
+            pg.draw.line(self.screen, LINE_COLOR, (middle_width_window + 25, pos), (middle_width_window + min_size_window - 25, pos), 5) # отрисовка вертикальных линиий
+
+        pg.draw.line(self.screen, LINE_DOWN_COLOR, (middle_width_window + 10, min_size_window), (middle_width_window + min_size_window - 10, min_size_window), 5) # отрисовка нижней линии для разделения интерфеса и поля
 
 
 
