@@ -16,5 +16,5 @@ TITLE = "Нолики-Крестики" # название окна
 GRID_MODES = {
     3: {"cell_size": 3, "line_count": 2},  # поле 3х3: 2 линии
     4: {"cell_size": 4, "line_count": 3},  # поле 4х4: 3 линии
-    5: {"cell_size": (WIDTH - 50) // 5, "line_count": 4}   # поле 5х5: 4 линии
+    5: {"cell_size": 5, "line_count": 4}   # поле 5х5: 4 линии
 }

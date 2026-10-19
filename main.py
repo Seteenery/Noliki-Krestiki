@@ -37,7 +37,7 @@ class Game:
         min_size_window = min(current_w, (current_h - 100)) # вычисляет меньшую сторону окна, с учетом того что нужно оставить 100 px в высоте для отрисовки интерфейса
         middle_width_window = (current_w - min_size_window) // 2 # сколько нужно прибавить к координате x для центрирования в окне
 
-        for i in range(1, self.line_count + 1):
+        for i in range(1, self.line_count + 1): # отрисовывает линии сетки, исходя из размера поля
             pos = (i * ((min_size_window - 50) // self.cell_size)) + 25 # координата для отрисовки линий внутри игрового поля от размера поля
             pg.draw.line(self.screen, LINE_COLOR, (middle_width_window + pos, 25), (middle_width_window + pos, min_size_window - 25), 5) # отрисовка горизонтальных линий
             pg.draw.line(self.screen, LINE_COLOR, (middle_width_window + 25, pos), (middle_width_window + min_size_window - 25, pos), 5) # отрисовка вертикальных линиий
