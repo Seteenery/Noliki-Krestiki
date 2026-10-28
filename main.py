@@ -1,6 +1,7 @@
 import sys
 import pygame as pg
-from code.settings import WIDTH, HEIGHT, FPS, TITLE, BG_COLOR, LINE_COLOR, GRID_MODES, LINE_DOWN_COLOR
+from code.settings import WIDTH, HEIGHT, FPS, TITLE, BG_COLOR, LINE_COLOR, GRID_MODES, LINE_DOWN_COLOR, current_mode_option, game_mode_option, FONT, SIZE_FONT
+from code.game_logic import GameLogic
 
 class Game:
     def __init__(self): # при запуске
@@ -9,11 +10,21 @@ class Game:
         pg.display.set_caption(TITLE) # вывод названия окна
         self.clock = pg.time.Clock() # отслеживание времени и FPS
         self.running = True # переключатель состояния игры
+        self.font = pg.font.Font(FONT, SIZE_FONT)
 
         # Режим игры (поле)
-        self.current_mode = 3 # размер поля
+        self.current_mode = current_mode_option # размер поля
         self.cell_size = GRID_MODES[self.current_mode]["cell_size"]
         self.line_count = GRID_MODES[self.current_mode]["line_count"]
+
+        self.game_mode = game_mode_option # Режим игры (PvP или PvE)
+
+        # Логика
+        self.game_logic = GameLogic()
+        self.bb_zeros = 0 # начально число для 0
+        self.bb_crosses = 0 # начально число для X (в том числе для бота)
+
+        self.current_turn = "O" # кто начинает игру
 
     def run(self): # запускает бесконечный игровой цикл
         while self.running: # сам цикл
@@ -32,23 +43,29 @@ class Game:
     def update(self): # логика игры (победы, ходы)
         pass
 
+    def make_bot_move(self): # свзязь между файлом ИИ и кодом
+        pass
+
     def draw_grid(self): # рисует игровую сетку в зависимости от режима
         current_w, current_h = self.screen.get_size() # реальные размеры окна
         min_size_window = min(current_w, (current_h - 100)) # вычисляет меньшую сторону окна, с учетом того что нужно оставить 100 px в высоте для отрисовки интерфейса
         middle_width_window = (current_w - min_size_window) // 2 # сколько нужно прибавить к координате x для центрирования в окне
+        current_cell_size = (min_size_window - 50) // self.cell_size
 
         for i in range(1, self.line_count + 1): # отрисовывает линии сетки, исходя из размера поля
-            pos = (i * ((min_size_window - 50) // self.cell_size)) + 25 # координата для отрисовки линий внутри игрового поля от размера поля
+            pos = (i * current_cell_size) + 25 # координата для отрисовки линий внутри игрового поля от размера поля
             pg.draw.line(self.screen, LINE_COLOR, (middle_width_window + pos, 25), (middle_width_window + pos, min_size_window - 25), 5) # отрисовка горизонтальных линий
             pg.draw.line(self.screen, LINE_COLOR, (middle_width_window + 25, pos), (middle_width_window + min_size_window - 25, pos), 5) # отрисовка вертикальных линиий
 
         pg.draw.line(self.screen, LINE_DOWN_COLOR, (middle_width_window + 10, min_size_window), (middle_width_window + min_size_window - 10, min_size_window), 5) # отрисовка нижней линии для разделения интерфеса и поля
 
-
+    def draw_player_cell(self): # рисует обводку ячейки для выбора куда поставить 0 и X
+        pass
 
     def draw(self): # визуализация игры (окно)
         self.screen.fill(BG_COLOR) # очищает все что было в окне, и заливает всё цветом "BG_COLOR" (происходит в скрытом холсте (двойная буферизация)
         self.draw_grid() # отрисовывает сетку
+        self.draw_player_cell() # отрисовка обводки ячейки
         pg.display.flip() # выводит изображение из скрытого холста в видимый
 
 

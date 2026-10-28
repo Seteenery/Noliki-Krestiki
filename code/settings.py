@@ -11,10 +11,17 @@ LINE_DOWN_COLOR = (120, 120, 0) # нижняя линия для разделе�
 
 TITLE = "Нолики-Крестики" # название окна
 
+# Интерфейс
+FONT = None
+SIZE_FONT = 20
 
 # Настройки игровой сетки
+current_mode_option = 3
 GRID_MODES = {
     3: {"cell_size": 3, "line_count": 2},  # поле 3х3: 2 линии
     4: {"cell_size": 4, "line_count": 3},  # поле 4х4: 3 линии
     5: {"cell_size": 5, "line_count": 4}   # поле 5х5: 4 линии
 }
+
+# Режим игры
+game_mode_option = "PvP" # "PvP" или "PvE"
