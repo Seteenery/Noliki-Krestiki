@@ -15,4 +15,5 @@ class GameLogic:
         return not (bool(mask & self.bitboard_x)) or (bool(mask and self.bitboard_0))
 
     def set_bitboard(self, name, position):
+
         pass
