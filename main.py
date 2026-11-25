@@ -12,12 +12,17 @@ class Game:
         self.running = True # переключатель состояния игры
         self.font = pg.font.Font(FONT, SIZE_FONT)
 
+        self.state = "MENU"
+
         # Режим игры (поле)
         self.current_mode = current_mode_option # размер поля
-        self.cell_size = GRID_MODES[self.current_mode]["cell_size"]
-        self.line_count = GRID_MODES[self.current_mode]["line_count"]
-
         self.game_mode = game_mode_option # Режим игры (PvP или PvE)
+        self.apply_grid_settings()
+
+        # Кнопки лаунчера
+        self.btn_grid_rect = pg.Rect(0, 0, 300, 50)
+        self.btn_mode_rect = pg.Rect(0, 0, 300, 50)
+        self.btn_start_rect = pg.Rect(0, 0, 300, 60)
 
         # Логика
         self.game_logic = GameLogic()
@@ -25,6 +30,9 @@ class Game:
         self.bb_crosses = 0 # начально число для X (в том числе для бота)
 
         self.current_turn = "O" # кто начинает игру
+    def apply_grid_settings(self):
+        self.cell_size = GRID_MODES[self.current_mode]["cell_size"]
+        self.line_count = GRID_MODES[self.current_mode]["line_count"]
 
     def run(self): # запускает бесконечный игровой цикл
         while self.running: # сам цикл
@@ -35,16 +43,45 @@ class Game:
         pg.quit() # если переключатель выключается - выключает процессы pg
         sys.exit() # закрывает сам процесс программы
 
-    def handle_events(self): # проверка событий (нажатий клавиш)
+
+    def handle_events(self): # проверка событий (нажатий клавиш) в игре
         for event in pg.event.get(): # собирает список из всего что сделал игрок
             if event.type == pg.QUIT: # если закрывается окно, выключает игру
                 self.running = False
+
+            if self.state == "MENU":
+                self.handle_events_menu(event)
+            elif self.state == "GAME":
+                self.handle_events_game(event)
+
+    def handle_events_menu(self, event):  # проверка событий (нажатий клавиш) в меню
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:  # ЛКМ
+            mouse_pos = event.pos
+
+            if self.btn_grid_rect.collidepoint(mouse_pos):
+                modes = list(GRID_MODES.keys())
+                next_index = (modes.index(self.current_mode) + 1) % len(modes)
+                self.current_mode = modes[next_index]
+                self.apply_grid_settings()
+
+            elif self.btn_mode_rect.collidepoint(mouse_pos):
+                self.game_mode = "PvE" if self.game_mode == "PvP" else "PvP"
+
+            elif self.btn_start_rect.collidepoint(mouse_pos):
+                self.state = "GAME"
+
+    def handle_events_game(self, event):  # проверка событий (нажатий клавиш) в игре
+        if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            self.state = "MENU"
 
     def update(self): # логика игры (победы, ходы)
         pass
 
     def make_bot_move(self): # свзязь между файлом ИИ и кодом
         pass
+
+    def draw_menu(self): # рисует меню
+
 
     def draw_grid(self): # рисует игровую сетку в зависимости от режима
         current_w, current_h = self.screen.get_size() # реальные размеры окна
@@ -64,8 +101,11 @@ class Game:
 
     def draw(self): # визуализация игры (окно)
         self.screen.fill(BG_COLOR) # очищает все что было в окне, и заливает всё цветом "BG_COLOR" (происходит в скрытом холсте (двойная буферизация)
-        self.draw_grid() # отрисовывает сетку
-        self.draw_player_cell() # отрисовка обводки ячейки
+        if self.state == "GAME":
+            self.draw_grid() # отрисовывает сетку
+            self.draw_player_cell() # отрисовка обводки ячейки
+        elif self.state == "MENU":
+            self.draw_menu()
         pg.display.flip() # выводит изображение из скрытого холста в видимый
 
 
