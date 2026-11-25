@@ -1,7 +1,6 @@
-from code.settings import current_mode_option
-
 class GameLogic:
-    def __init__(self):
+    def __init__(self, board_size=3):
+        self.board_size = board_size
         # Битборды
         self.bitboard_0 = 0
         self.bitboard_x = 0
@@ -26,10 +25,15 @@ class GameLogic:
             ]
         }
 
+    def reset(self, board_size):
+        self.board_size = board_size
+        self.bitboard_0 = 0
+        self.bitboard_x = 0
+
     # Проверка занятости
     def cell_check(self, position):
         mask = 1 << position
-        return not (bool(mask & self.bitboard_x)) or (bool(mask & self.bitboard_0))
+        return not (bool(mask & self.bitboard_x) or bool(mask & self.bitboard_0))
 
     # Установить бит
     def set_bitboard(self, name, position):

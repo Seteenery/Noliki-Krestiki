@@ -26,9 +26,6 @@ class Game:
 
         # Логика
         self.game_logic = GameLogic()
-        self.bb_zeros = 0 # начально число для 0
-        self.bb_crosses = 0 # начально число для X (в том числе для бота)
-
         self.current_turn = "O" # кто начинает игру
     def apply_grid_settings(self):
         self.cell_size = GRID_MODES[self.current_mode]["cell_size"]
@@ -68,6 +65,7 @@ class Game:
                 self.game_mode = "PvE" if self.game_mode == "PvP" else "PvP"
 
             elif self.btn_start_rect.collidepoint(mouse_pos):
+                self.game_logic.reset(self.current_mode)
                 self.state = "GAME"
 
     def handle_events_game(self, event):  # проверка событий (нажатий клавиш) в игре
@@ -97,7 +95,7 @@ class Game:
             txt_surf = self.font.render(text, True, color_txt)
             self.screen.blit(txt_surf, txt_surf.get_rect(center=rect.center))
 
-        draw_button(self.btn_grid_rect, f"Поле: {self.current_mode}", BG_COLOR, TXT_COLOR)
+        draw_button(self.btn_grid_rect, f"Поле: {self.current_mode}x{self.current_mode}", BG_COLOR, TXT_COLOR)
         draw_button(self.btn_mode_rect, f"Режим: {self.game_mode}", BG_COLOR, TXT_COLOR)
         draw_button(self.btn_start_rect, "ИГРАТЬ", LINE_DOWN_COLOR, TXT_COLOR)
 
